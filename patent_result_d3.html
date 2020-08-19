@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Patent Result</title>
+    <script src="../d3.min.js"></script>
+    <script src="../jquery.min.js"></script>
+
+    <script>
+        $(function () {
+            // 1. データの準備
+            var dataAnalytic = [
+                [9000, 75000], [8800, 66000], [7000, 69500]
+            ];
+            var dataPopulation = [
+                [8000, 74000],
+                [8000, 66000],
+                [7800, 65000],
+                [7500, 68000],
+                [7500, 65000],
+                [7200, 67000],
+                [3800, 60000],
+                [5000, 35000],
+                [3000, 25000],
+                [4500, 55000]
+            ];
+
+            var width = 1200; // グラフの幅
+            var height = 800; // グラフの高さ
+            var margin = { "top": 70, "bottom": 60, "right": 30, "left": 100 };
+
+            // 2. SVG領域の設定
+            var svg = d3.select("#scatter01").append("svg").attr("width", width).attr("height", height);
+
+            // 3. 軸スケールの設定
+            var xScale = d3.scaleLinear()
+                //.domain([0, d3.max(dataset, function (d) { return d[0]; })])
+                .domain([0, 10000])
+                .range([margin.left, width - margin.right]);
+
+            var yScale = d3.scaleLinear()
+                //.domain([0, d3.max(dataset, function (d) { return d[1]; })])
+                .domain([0, 100000])
+                .range([height - margin.bottom, margin.top]);
+            
+            var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            
+            var dot = g.append("g")
+                .attr("fill-opacity", 0.2)
+                .selectAll("circle")
+                .data(dataPopulation)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return xScale(d[0]) })
+                .attr("cy", function (d) { return yScale(d[1]) })
+                .attr("r", 5);
+
+            svg.append("g")
+                .attr("transform", "translate(" + margin.left + "," + (height - margin.bottom) + ")")
+                .call(d3.axisBottom(xScale));
+
+            svg.append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .call(d3.axisLeft(yScale));
+
+            // 4. 軸の表示
+            var axisx = d3.axisBottom(xScale).ticks(10);
+            var axisy = d3.axisLeft(yScale).ticks(10);
+
+            svg.append("g")
+                .attr("transform", "translate(" + 0 + "," + (height - margin.bottom) + ")")
+                .call(axisx)
+                .append("text")
+                .attr("fill", "black")
+                .attr("x", (width - margin.left - margin.right) / 2 + margin.left)
+                .attr("y", 45)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "10pt")
+                .attr("font-weight", "bold")
+                .text("請求項１スコア");
+
+            svg.append("g")
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+                .call(axisy)
+                .append("text")
+                .attr("fill", "black")
+                .attr("x", -(height - margin.top - margin.bottom) / 2 - margin.top)
+                .attr("y", -65)
+                .attr("transform", "rotate(-90)")
+                .attr("text-anchor", "middle")
+                .attr("font-weight", "bold")
+                .attr("font-size", "10pt")
+                .text("明細書上位１０件の合計");
+
+            // 5. プロットの表示
+            svg.append("g")
+                .selectAll("circle")
+                .data(dataAnalytic)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return xScale(d[0]); })
+                .attr("cy", function (d) { return yScale(d[1]); })
+                .attr("fill", "red")
+                .attr("r", 4);
+
+            svg.append("g")
+                .selectAll("circle")
+                .data(dataPopulation)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return xScale(d[0]); })
+                .attr("cy", function (d) { return yScale(d[1]); })
+                .attr("fill", "blue")
+                .attr("r", 4);
+
+            // 6. 凡例
+            svg.append("text")
+                .attr("x", 500)
+                .attr("y", 30)
+                .text("解析軸A");
+
+            svg.append("text")
+                .attr("x", 600)
+                .attr("y", 30)
+                .text("母集団");
+
+            // 7. brushの設定
+            var brush = d3.brush()
+                .extent([
+                    [0, 0],
+                    [width - margin.left - margin.right, height - margin.top - margin.bottom]
+                ])
+                .on("brush", brushed);
+
+            g.append("g")
+                .call(brush)
+                .call(brush.move, [
+                    [xScale(2), yScale(0.8)],
+                    [xScale(5), yScale(0.3)]
+                ]);
+
+            function brushed() {
+                var x0 = xScale.invert(d3.event.selection[0][0]);
+                var y1 = yScale.invert(d3.event.selection[0][1]);
+                var x1 = xScale.invert(d3.event.selection[1][0]);
+                var y0 = yScale.invert(d3.event.selection[1][1]);
+                dot.classed("selected",
+                    function (d) {
+                        return (x0 <= d[0] && d[0] <= x1) && (y0 <= d[1] && d[1] <= y1);
+                    }
+                );
+            }
+
+        });
+
+
+    </script>
+</head>
+
+<body>
+    <div style="width:75%">
+        <div id="scatter01"></div>
+    </div>
+
+</body>
+
+</html>

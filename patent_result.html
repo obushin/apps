@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Patent Result</title>
+    <script src="../../../dist/Chart.min.js"></script>
+    <script src="../../../dist/jquery.min.js"></script>
+	<script src="../../utils.js"></script>
+	<style>
+	canvas {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+    </style>
+    <script>
+        var color = Chart.helpers.color;
+        var chartData = {
+            datasets: [
+                {
+                    label: "解析軸A",
+                    borderColor: window.chartColors.red,
+                    backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+                    data: [
+                        {x: 9000, y: 75000},
+                        {x: 8800, y: 66000},
+                        {x: 7000, y: 69500},
+                    ]
+                },
+                {
+                    label: "母集団",
+                    borderColor: window.chartColors.blue,
+                    backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+                    data: [
+                        {x: 8000, y: 74000},
+                        {x: 8000, y: 66000},
+                        {x: 7800, y: 65000},
+                        {x: 7500, y: 68000},
+                        {x: 7500, y: 65000},
+                        {x: 7200, y: 67000},
+                        {x: 3800, y: 60000},
+                        {x: 5000, y: 35000},
+                        {x: 3000, y: 25000},
+                        {x: 4500, y: 55000},
+                    ]
+                }
+            ]
+        };
+
+        $(function(){
+            var ctx = $("#scatter01")[0].getContext("2d");
+			window.myScatter = Chart.Scatter(ctx, {
+				data: chartData,
+				options: {
+					title: {
+						display: true,
+						text: 'Chart.js Scatter Chart'
+                    },
+                    scales: {
+                        xAxes: [
+                            {
+                               scaleLabel: {
+                                   display: true,
+                                   labelString: "請求項１スコア"
+                               },
+                               ticks: {
+                                   min: 0,
+                                   max: 10000,
+                                   stepSize: 1000
+                               } 
+                            }
+                        ],
+                        yAxes: [
+                            {
+                               scaleLabel: {
+                                   display: true,
+                                   labelString: "明細書上位１０件の合計"
+                               },
+                               ticks: {
+                                   min: 0,
+                                   max: 100000,
+                                   stepSize: 10000
+                               } 
+                            }
+                        ]
+                    }
+				}
+			});
+        });
+
+    </script>
+</head>
+
+<body>
+	<div style="width:75%">
+		<canvas id="scatter01"></canvas>
+    </div>
+    
+</body>
+
+</html>

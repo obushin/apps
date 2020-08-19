@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Patent Result</title>
+    <script src="../../../dist/apexcharts.js"></script>
+    <script src="../../../dist/jquery.min.js"></script>
+    <script src="../../utils.js"></script>
+
+    <script>
+        $(function () {
+            var options = {
+                chart: {
+                    height: 350,
+                    type: 'scatter',
+                    // zoom: {
+                    //     enabled: false
+                    // },
+                    // selection: {
+                    //     enabled: true,
+                    //     type: "xy",
+                    //     fill: {
+                    //         color: '#24292e',
+                    //         opacity: 0.1
+                    //     },
+                    //     stroke: {
+                    //         width: 1,
+                    //         dashArray: 3,
+                    //         color: '#24292e',
+                    //         opacity: 0.4
+                    //     }
+                    // },
+                    states: {
+                        normal: {
+                            filter: {
+                                type: 'none',
+                                value: 0,
+                            }
+                        },
+                        hover: {
+                            filter: {
+                                type: 'lighten',
+                                value: 0.15,
+                            }
+                        },
+                        active: {
+                            allowMultipleDataPointsSelection: true,
+                            filter: {
+                                type: 'darken',
+                                value: 0.35,
+                            }
+                        },
+                    },
+                    events: {
+                        click: function (event, chartContext, config) {
+                            //console.log("click");
+                        },
+                        markerClick: function (event, chartContext, { seriesIndex, dataPointIndex, config }) {
+                            console.log("markerClick");
+                        },
+                        selection: function (chartContext, { xaxis, yaxis }) {
+                            console.log("selection");
+                        },
+                        dataPointSelection: function (event, chartContext, config) {
+                            console.log("dataPointSelection");
+                        },
+                        dataPointMouseEnter: function (event, chartContext, config) {
+                            //console.log("dataPointMouseEnter");
+                        }
+                    }
+                },
+                series: [{
+                    name: "解析軸A",
+                    data: [
+                        [9000, 75000], [8800, 66000], [7000, 69500]
+                    ]
+                }, {
+                    name: "母集団",
+                    data: [
+                        [8000, 74000],
+                        [8000, 66000],
+                        [7800, 65000],
+                        [7500, 68000],
+                        [7500, 65000],
+                        [7200, 67000],
+                        [3800, 60000],
+                        [5000, 35000],
+                        [3000, 25000],
+                        [4500, 55000]
+                    ]
+                }],
+                xaxis: {
+                    min: 0,
+                    max: 10000,
+                    //tickAmount: 1000,
+                    tickPlacement: "on",
+                    title: {
+                        text: "請求項１スコア"
+                    }
+                },
+                yaxis: {
+                    min: 0,
+                    max: 100000,
+                    //tickAmount: 10000,
+                    tickPlacement: "on",
+                    title: {
+                        text: "明細書上位１０件の合計"
+                    }
+                },
+                grid: {
+                    xaxis: {
+                        lines: {
+                            show: true
+                        }
+                    },
+                    yaxis: {
+                        lines: {
+                            show: true
+                        }
+                    }
+                }
+            }
+
+            var chart = new ApexCharts(document.querySelector("#scatter01"), options);
+            chart.render();
+        });
+
+
+    </script>
+</head>
+
+<body>
+    <div style="width:75%">
+        <div id="scatter01"></div>
+    </div>
+
+</body>
+
+</html>
